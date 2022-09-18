@@ -20,8 +20,6 @@ public class Main {
         sb.append("Создана директория \"temp\". \"");
         Files.createDirectories(Paths.get("src"));
         sb.append("Создана директория \"src\". \"");
-        Files.createDirectories(Paths.get("src/main"));
-        sb.append("В директории \"src\" создана директория \"main\". \"");
         Files.createDirectories(Paths.get("src/test"));
         sb.append("В директории \"src\" создана директория \"test\". \"");
         Files.createDirectories(Paths.get("res/drawables"));
@@ -30,26 +28,6 @@ public class Main {
         sb.append("В директории \"res\" создана директория \"vectors\". \"");
         Files.createDirectories(Paths.get("res/icons"));
         sb.append("В директории \"res\" создана директория \"icons\". \"");
-
-        try {
-            File main = new File("src/main/Main.java");
-            if (main.createNewFile())
-                sb.append("File \"Main.java\" created. ");
-            else
-                System.out.println("File already exists. ");
-        } catch (Exception e) {
-            System.err.println(e);
-        }
-
-        try {
-            File utils = new File("src/main/Utils.java");
-            if (utils.createNewFile())
-                sb.append("File \"Utils.java\" created. ");
-            else
-                System.out.println("File already exists");
-        } catch (Exception e) {
-            System.err.println(e);
-        }
 
         try {
             File temp = new File("temp/temp.txt");
@@ -76,6 +54,8 @@ public class Main {
         list.add("savegames/savegames2.txt");
         list.add("savegames/savegames3.txt");
         zipFiles("savegames/savegames.zip", list);
+        deletingSaves (list);
+
 
     }
 
@@ -102,10 +82,21 @@ public class Main {
                 fis.read(buffer);
                 zout.write(buffer);
                 zout.closeEntry();
-                Path p = Paths.get(file);
-                Files.delete(p);
             }
             zout.close();
+            return true;
+        } catch (Exception e) {
+            System.err.println(e);
+            return false;
+        }
+    }
+
+    public static boolean deletingSaves (List<String> list) {
+        try {
+            for (String file : list) {
+                Path path = Paths.get(file);
+                Files.delete(path);
+            }
             return true;
         } catch (Exception e) {
             System.err.println(e);
