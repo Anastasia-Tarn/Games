@@ -75,13 +75,16 @@ public class Main {
         try {
             ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(path));
             for (String file : list) {
-                ZipEntry entry = new ZipEntry(file);
-                zout.putNextEntry(entry);
-                FileInputStream fis = new FileInputStream(file);
-                byte[] buffer = new byte[fis.available()];
-                fis.read(buffer);
-                zout.write(buffer);
-                zout.closeEntry();
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    ZipEntry entry = new ZipEntry(file);
+                    zout.putNextEntry(entry);
+                    byte[] buffer = new byte[fis.available()];
+                    fis.read(buffer);
+                    zout.write(buffer);
+                    zout.closeEntry();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             zout.close();
             return true;
